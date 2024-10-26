@@ -1,0 +1,38 @@
+name: "NestJS CodeQL Config"
+
+disable-default-queries: false
+
+queries:
+  - uses: security-and-quality
+  - uses: security-extended
+  - name: JavaScript and TypeScript security and quality
+    uses: javascript-security-queries
+  - name: Custom NestJS security queries
+    uses: ./custom-queries/*.ql
+
+query-filters:
+  - exclude:
+      problem.severity:
+        - note
+        - warning
+
+paths:
+  - src
+  - test
+paths-ignore:
+  - node_modules
+  - dist
+  - coverage
+  - '**/*.test.ts'
+  - '**/*.spec.ts'
+  - '**/*.d.ts'
+
+trap:
+  javascript:
+    runtime: full
+
+security-severity-mapping:
+  critical: 9.0
+  high: 7.0
+  medium: 4.0
+  low: 1.0
