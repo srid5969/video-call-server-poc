@@ -41,9 +41,16 @@ jobs:
         with:
           languages: ${{ matrix.language }}
           build-mode: ${{ matrix.build-mode }}
-          queries: security-extended,security-and-quality
+          packs: +codeql/javascript-queries:recommended
+          # Using correct query suite references
+          queries: |
+            +codeql/javascript-queries/Security
+            +codeql/javascript-queries/Metrics
+            +codeql/javascript-queries/Performance
+            +codeql/javascript-queries/Code Style
+            +codeql/javascript-queries/Documentation
+            +./.github/codeql/custom-queries
           config-file: ./.github/codeql/codeql-config.yml
-          packs: +security-extended,security-and-quality,javascript-security-queries,typescript-security-queries
           
       - name: Install dependencies
         run: |

@@ -2,19 +2,24 @@ name: "NestJS CodeQL Config"
 
 disable-default-queries: false
 
-queries:
-  - uses: security-and-quality
-  - uses: security-extended
-  - name: JavaScript and TypeScript security and quality
-    uses: javascript-security-queries
-  - name: Custom NestJS security queries
-    uses: ./custom-queries/*.ql
+packs:
+  # Use officially supported query packs
+  - codeql/javascript-queries
+  - codeql/typescript-queries
 
-query-filters:
-  - exclude:
-      problem.severity:
-        - note
-        - warning
+queries:
+  # Security queries
+  - name: Extended Security Queries
+    uses: codeql/javascript-queries/Security
+  # Quality queries
+  - name: Code Quality Queries
+    uses: codeql/javascript-queries/Code Quality
+  # Best practices
+  - name: Best Practice Queries
+    uses: codeql/javascript-queries/Best Practices
+  # Custom queries
+  - name: Custom NestJS Queries
+    uses: ./.github/codeql/custom-queries/*.ql
 
 paths:
   - src
@@ -26,6 +31,13 @@ paths-ignore:
   - '**/*.test.ts'
   - '**/*.spec.ts'
   - '**/*.d.ts'
+
+extraction:
+  javascript:
+    index:
+      typescript: true
+      dependencies: true
+      frameworks: true
 
 trap:
   javascript:
