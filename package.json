@@ -20,6 +20,7 @@
     "test:e2e": "jest --config ./test/jest-e2e.json"
   },
   "dependencies": {
+    "@nestjs/cache-manager": "^2.3.0",
     "@nestjs/common": "^10.0.0",
     "@nestjs/config": "^3.3.0",
     "@nestjs/core": "^10.0.0",
@@ -31,6 +32,7 @@
     "@nestjs/websockets": "^10.4.6",
     "app-server": "file:",
     "bcrypt": "^5.1.1",
+    "cache-manager": "^6.1.1",
     "mongoose": "^8.7.3",
     "passport-jwt": "^4.0.1",
     "reflect-metadata": "^0.2.0",
