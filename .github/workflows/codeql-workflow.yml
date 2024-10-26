@@ -6,13 +6,13 @@ on:
   pull_request:
     branches: [ "main" ]
   # schedule:
-  #   - cron: '30 5 * * 6'  # Runs at 5:30 AM UTC on Saturdays
+  #   - cron: '30 5 * * 6'
 
 jobs:
   analyze:
     name: Analyze (${{ matrix.language }})
     runs-on: ubuntu-latest
-    timeout-minutes: 360  # Increased timeout for comprehensive analysis
+    timeout-minutes: 360
     permissions:
       security-events: write
       packages: read
@@ -41,23 +41,15 @@ jobs:
         with:
           languages: ${{ matrix.language }}
           build-mode: ${{ matrix.build-mode }}
-          packs: +codeql/javascript-queries:recommended
-          # Using correct query suite references
           queries: |
-            +codeql/javascript-queries/Security
-            +codeql/javascript-queries/Metrics
-            +codeql/javascript-queries/Performance
-            +codeql/javascript-queries/Code Style
-            +codeql/javascript-queries/Documentation
+            +security-and-quality
+            +security-extended
             +./.github/codeql/custom-queries
-          config-file: ./.github/codeql/codeql-config.yml
           
       - name: Install dependencies
         run: |
           npm ci
-          # Install specific dev dependencies if needed
-          npm install --save-dev @nestjs/testing @types/jest
-
+          
       - name: Build NestJS application
         run: |
           npm run build
@@ -65,24 +57,15 @@ jobs:
       - name: Run Tests
         run: |
           npm run test
-        continue-on-error: true  # Continue analysis even if tests fail
+        continue-on-error: true
 
       - name: Perform CodeQL Analysis
         uses: github/codeql-action/analyze@v3
         with:
           category: "/language:${{matrix.language}}"
-          upload: true
           output: sarif-results
-          threads: auto
-          ram: auto
 
-      - name: Upload SARIF results
-        uses: github/codeql-action/upload-sarif@v3
-        with:
-          sarif_file: sarif-results/${{ matrix.language }}.sarif
-          category: "/language:${{matrix.language}}"
-
-      - name: Save CodeQL Analysis Logs
+      - name: Upload Analysis Logs
         if: always()
         uses: actions/upload-artifact@v3
         with:
