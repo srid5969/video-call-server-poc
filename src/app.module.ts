@@ -1,14 +1,14 @@
 import { Module } from '@nestjs/common';
+import { ConfigModule, ConfigService } from '@nestjs/config';
+import { MongooseModule } from '@nestjs/mongoose';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
-import { RoomService } from './services/room.service';
-import { VideoCallGateway } from './lib/video-call.gateway';
-import { VideoCallController } from './controllers/video-call.controller';
 import { AuthModule } from './auth/auth.module';
+import appConfig, { AppConfig } from './config/app-config';
+import { VideoCallController } from './controllers/video-call.controller';
+import { VideoCallGateway } from './lib/video-call.gateway';
+import { RoomService } from './services/room.service';
 import { UsersModule } from './users/users.module';
-import { MongooseModule } from '@nestjs/mongoose';
-import { ConfigModule, ConfigService } from '@nestjs/config';
-import appConfig from './config/app-config';
 
 @Module({
   imports: [
@@ -20,7 +20,7 @@ import appConfig from './config/app-config';
     }),
     MongooseModule.forRootAsync({
       imports: [ConfigModule],
-      useFactory: async (configService: ConfigService) => ({
+      useFactory: async (configService: ConfigService<AppConfig>) => ({
         uri: configService.get<string>('MONGODB_URI'),
         dbName: configService.get<string>('DATABASE'),
       }),

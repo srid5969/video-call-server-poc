@@ -1,5 +1,5 @@
-const appConfig =()=>( {
-  PORT: process.env.PORT || 3000,
+const appConfig = () => ({
+  PORT: +(process.env.PORT || 3000),
   MONGODB_URI: process.env.MONGODB_URI || 'mongodb://localhost/nest',
   DATABASE: process.env.DATABASE || 'development',
   JWT_SECRET: process.env.JWT_SECRET,
@@ -12,4 +12,18 @@ const appConfig =()=>( {
   TURN_USERNAME: process.env.TURN_USERNAME || 'homeo',
   TURN_CREDENTIAL: process.env.TURN_CREDENTIAL || 'homeo',
 });
+export interface AppConfig {
+  PORT: number;
+  MONGODB_URI: string;
+  DATABASE: string;
+  JWT_SECRET: string;
+  JWT_EXPIRATION: string;
+  JWT_REFRESH_SECRET: string;
+  JWT_REFRESH_EXPIRATION: string;
+  APP_URL: string;
+  STUN_SERVER: string;
+  TURN_SERVER: string;
+  TURN_USERNAME: string;
+  TURN_CREDENTIAL: string;
+}
 export default appConfig;
