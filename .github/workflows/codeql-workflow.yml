@@ -1,0 +1,77 @@
+name: "CodeQL Advanced Analysis"
+
+on:
+  push:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
+  # schedule:
+  #   - cron: '30 5 * * 6'
+
+jobs:
+  analyze:
+    name: Analyze (${{ matrix.language }})
+    runs-on: ubuntu-latest
+    timeout-minutes: 360
+    permissions:
+      security-events: write
+      packages: read
+      actions: read
+      contents: read
+
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - language: javascript-typescript
+            build-mode: none
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '18'
+          cache: 'npm'
+
+      - name: Initialize CodeQL
+        uses: github/codeql-action/init@v3
+        with:
+          languages: ${{ matrix.language }}
+          build-mode: ${{ matrix.build-mode }}
+          queries: |
+            +security-and-quality
+            +security-extended
+            +./.github/codeql/custom-queries
+          
+      - name: Install dependencies
+        run: |
+          npm ci
+          
+      - name: Build NestJS application
+        run: |
+          npm run build
+          
+      - name: Run Tests
+        run: |
+          npm run test
+        continue-on-error: true
+
+      - name: Perform CodeQL Analysis
+        uses: github/codeql-action/analyze@v3
+        with:
+          category: "/language:${{matrix.language}}"
+          output: sarif-results
+
+      - name: Upload Analysis Logs
+        if: always()
+        uses: actions/upload-artifact@v3
+        with:
+          name: codeql-analysis-logs
+          path: |
+            sarif-results/
+            ./**/log/
+            ./**/*.log
+          # retention-days: 7

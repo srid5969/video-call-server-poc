@@ -9,6 +9,7 @@ import { VideoCallController } from './controllers/video-call.controller';
 import { VideoCallGateway } from './lib/video-call.gateway';
 import { RoomService } from './services/room.service';
 import { UsersModule } from './users/users.module';
+import { CacheModule } from '@nestjs/cache-manager';
 
 @Module({
   imports: [
@@ -26,6 +27,7 @@ import { UsersModule } from './users/users.module';
       }),
       inject: [ConfigService],
     }),
+    CacheModule.register()
   ],
   controllers: [AppController, VideoCallController],
   providers: [AppService, RoomService, VideoCallGateway],

@@ -1,0 +1,29 @@
+name: "NestJS CodeQL Config"
+
+disable-default-queries: false
+
+paths:
+  - src
+  - test
+paths-ignore:
+  - node_modules
+  - dist
+  - coverage
+  - '**/*.test.ts'
+  - '**/*.spec.ts'
+  - '**/*.d.ts'
+
+queries:
+  - name: Custom NestJS Queries
+    uses: ./.github/codeql/custom-queries/*.ql
+
+query-filters:
+  - exclude:
+      problem.severity:
+        - note
+        - recommendation
+
+extraction:
+  javascript:
+    index:
+      typescript: true
